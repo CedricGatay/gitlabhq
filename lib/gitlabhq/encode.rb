@@ -3,12 +3,8 @@ module Gitlabhq
     extend self
 
     def utf8 message
-      hash = CharlockHolmes::EncodingDetector.detect(message) rescue {}
-      if hash[:encoding]
-        CharlockHolmes::Converter.convert(message, hash[:encoding], 'UTF-8')
-      else
-        message
-      end.force_encoding("utf-8")
+      #see http://stackoverflow.com/a/8711122/722952
+      message.encode('UTF-16le', :invalid => :replace, :replace => '').encode('UTF-8') rescue message.force_encoding('utf-8')
     end
   end
 end
